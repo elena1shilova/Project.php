@@ -5,8 +5,6 @@ if(empty($_POST)) {
 } else {
     $login = !empty($_POST['login']) ? $_POST['login'] : '';
     $password = !empty($_POST['password']) ? $_POST['password'] : '';
-
-
         try {
             //подключение к БД
             $db = new PDO('mysql:host=localhost; dbname=itrem', 'root', 'root');
@@ -14,30 +12,57 @@ if(empty($_POST)) {
             //при наличиек ошибки выводит ее
             print "Что-то пошло не так. Ошибка!: " . $e->getMessage() . "<br/>";//???getMessage
         }
-        // собираем данные для запроса
-        $data = array('login' => $login, 'password' => $password);
-        // подготавливаем SQL-запрос
-//        $query = $db->prepare("SELECT * FROM messages where 'login' =:login and 'password' = :password");
-        //$query = $db->prepare("SELECT * FROM users WHERE login = '".$login."' and password = '".$password."'");
-//        $query = $db->prepare("SELECT * FROM messages WHERE login = :login and password = :password");
-//    $query = $db->prepare("SELECT  FROM messages WHERE 'login' = '$login' and 'password' = '$password'");
-    $query = $db->prepare("SELECT * FROM messages WHERE login = :login");
-        // выполняем запрос с данными
-//        $query->execute($data);
-    $query->execute(['login'=>$login]);
-    $row = $query->fetch();
-//        if ($query->execute($data)>0) {
-//            echo 'Пользователь не найден!';
+//$data = array('login' => $login, 'password' => $password);
+//    $query = $db->prepare("SELECT login, password FROM messages WHERE login = :login and password = :password");
+//
+//    $query->execute($data);
+//    $result = $query->fetchAll();
+//    //var_dump($data);
+//    $nnn = 0;
+//    if (count($result)) {
+//
+//        foreach($result as $row) {
+//            $nnn = 1;
 //        }
-//        else {
-//            echo ' Вход выполнен!';
-//        }
-        if(!empty($row) && password_verify($password, $row['password'])) {
-            echo "success id is {$row['id']}";
-        } else {
-            echo 'fail';
+//    } else {
+//        echo "Ошибка логина!";
+//    }
+//    if($nnn == 1) {
+//        print_r($data['login']);
+//        echo '! Вы успешно прошли авторизацию!';
+//    }
+    $data1 = array('login' => $login);
+    $query = $db -> prepare("SELECT login FROM messages WHERE login = :login");
+    $query->execute($data1);
+    $result = $query -> fetchAll();
+    //var_dump($data);
+    $nnn = 0;
+    $mmm = 0;
+    if (count($result)) {
+        foreach($result as $row) {
+            $nnn = 1;
         }
+    } else {
+        echo "Ошибка логина!";
+    }
 
+    $data2 = array('password' => $password);
+    $query = $db -> prepare("SELECT password FROM messages WHERE password = :password");
+    $query -> execute($data2);
+    $result = $query -> fetchAll();
+    echo '<br>';
+    if (count($result)) {
+
+        foreach($result as $row) {
+            $mmm = 1;
+        }
+    } else {
+        echo "Ошибка пароля!";
+    }
+    if($nnn == 1 && $mmm == 1) {
+        print_r($data1['login']);
+        echo '! Вы успешно прошли авторизацию!';
+    }
 }
 
 //ооп, 10-11
