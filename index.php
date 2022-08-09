@@ -17,43 +17,28 @@ function isConfermPasswordValid($password, $repeatPassword, $number)
     return false;
 }
 
+
 if(empty($_POST)) {
     include 'index.html';
 } else {
+    require_once __DIR__ . 'User.php';
+    $userOne = new User($_POST);
+    $userTwo = new User($_POST);
 
-
-    $login1 = !empty($_POST['login1']) ? $_POST['login1'] : '';//тернарный оператор
-    $password1 = !empty($_POST['password1']) ? $_POST['password1'] : '';
-    $repeatPassword1 = !empty($_POST['repeatPassword1']) ? $_POST['repeatPassword1'] : '';
-    $age1 = !empty($_POST['age1']) ? $_POST['age1'] : '';
-    $login2 = !empty($_POST['login2']) ? $_POST['login2'] : '';//тернарный оператор
-    $password2 = !empty($_POST['password2']) ? $_POST['password2'] : '';
-    $repeatPassword2 = !empty($_POST['repeatPassword2']) ? $_POST['repeatPassword2'] : '';
-    $age2 = !empty($_POST['age2']) ? $_POST['age2'] : '';
     $errors = [];
-    $errors[] = temp($password1, 1);
-    $errors[] = temp($password2, 2);
+    $errors[] = temp($userOne->password, 1);
+    $errors[] = temp($userTwo->password, 2);
+    $errors[] = isConfermPasswordValid($userOne->password, $userOne->repeatPassword, 1);
+    $errors[] = isConfermPasswordValid($userTwo->password, $userTwo->repeatPassword, 1);
 
-
-    $errors[] = isConfermPasswordValid($password1, $repeatPassword1, 1);
-    $errors[] = isConfermPasswordValid($password2, $repeatPassword2, 2);
     foreach ($errors as $error) {
         if ($error) {
             include 'index.html';
             break;
         }
-
-
     }
-//    if ($repeatPassword1 != $password1){
-//        echo "Пароли №1 не совпадают, пожалуйста, заполните форму еще раз!";
-//        include 'index.html';
-//    }
-//    elseif ($repeatPassword2 != $password2){
-//        echo "Пароли №2 не совпадают, пожалуйста, заполните форму еще раз!";
-//        include 'index.html';
-//    }
-    if ($age1 < 18&&$age2 < 18) {
+
+    if ($userOne->age < 18 && $userTwo->age < 18) {
         echo 'Кому-то сюда нельзя!';
     }
     else {
@@ -68,8 +53,8 @@ if(empty($_POST)) {
         }
         // собираем данные для запроса
         $data = [
-                ['login' => $login1, 'password' => $password1, 'age' => $age1],
-                ['login' => $login2, 'password' => $password2, 'age' => $age2]
+                ['login' => $userOne->login, 'password' => $userOne->password, 'age' => $userOne->age],
+                ['login' => $userTwo->login, 'password' => $userTwo->password, 'age' => $userTwo->age]
             ];
         // подготавливаем SQL-запрос
         $query = $db->prepare("INSERT INTO new (login, password, age) values (:login, :password, :age)");
