@@ -8,6 +8,14 @@ function temp($password, $number)
     }
     return false;
 }
+function isConfermPasswordValid($password, $repeatPassword, $number)
+{
+    if ($repeatPassword != $password) {
+        echo 'Пароли №' . $number . ' не совпадают, пожалуйста, заполните форму еще раз!';
+        return true;
+    }
+    return false;
+}
 
 if(empty($_POST)) {
     include 'index.html';
@@ -26,20 +34,26 @@ if(empty($_POST)) {
     $errors[] = temp($password1, 1);
     $errors[] = temp($password2, 2);
 
-    foreach ($errors as $error) {
-        if ($error) include 'index.html';
-        break;
-    }
 
-    if ($repeatPassword1 != $password1){
-        echo "Пароли №1 не совпадают, пожалуйста, заполните форму еще раз!";
-        include 'index.html';
+    $errors[] = isConfermPasswordValid($password1, $repeatPassword1, 1);
+    $errors[] = isConfermPasswordValid($password2, $repeatPassword2, 2);
+    foreach ($errors as $error) {
+        if ($error) {
+            include 'index.html';
+            break;
+        }
+
+
     }
-    elseif ($repeatPassword2 != $password2){
-        echo "Пароли №2 не совпадают, пожалуйста, заполните форму еще раз!";
-        include 'index.html';
-    }
-    elseif ($age1 < 18&&$age2 < 18) {
+//    if ($repeatPassword1 != $password1){
+//        echo "Пароли №1 не совпадают, пожалуйста, заполните форму еще раз!";
+//        include 'index.html';
+//    }
+//    elseif ($repeatPassword2 != $password2){
+//        echo "Пароли №2 не совпадают, пожалуйста, заполните форму еще раз!";
+//        include 'index.html';
+//    }
+    if ($age1 < 18&&$age2 < 18) {
         echo 'Кому-то сюда нельзя!';
     }
     else {
