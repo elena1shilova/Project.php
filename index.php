@@ -1,5 +1,11 @@
 <?php
-
+function temp($password, $number)
+{
+    if (strlen($password) < 6) {
+        echo 'Пароль №' . $number . ' содержит меньше 6 символов!';
+        include 'index.html';
+    }
+}
 
 if(empty($_POST)) {
     include 'index.html';
@@ -14,15 +20,11 @@ if(empty($_POST)) {
     $password2 = !empty($_POST['password2']) ? $_POST['password2'] : '';
     $repeatPassword2 = !empty($_POST['repeatPassword2']) ? $_POST['repeatPassword2'] : '';
     $age2 = !empty($_POST['age2']) ? $_POST['age2'] : '';
-    if(strlen($password1)<6) {
-        echo "Пароль №1 содержит меньше 6 символов!";
-        include 'index.html';
-    }
-    elseif(strlen($password2)<6) {
-        echo "Пароль №2 содержит меньше 6 символов!";
-        include 'index.html';
-    }
-    elseif ($repeatPassword1 != $password1){
+
+    temp($password1, 1);
+    temp($password2, 2);
+
+    if ($repeatPassword1 != $password1){
         echo "Пароли №1 не совпадают, пожалуйста, заполните форму еще раз!";
         include 'index.html';
     }
